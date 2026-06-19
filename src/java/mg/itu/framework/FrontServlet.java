@@ -22,8 +22,10 @@ import java.util.List;
 public class FrontServlet extends HttpServlet {
 
     private List<Mapping> mappings = new ArrayList<>();
+    private List<Class<?>> controllers = new ArrayList<>();
 
     @Override
+    @SuppressWarnings("unchecked")
     public void init() throws ServletException {
         try {
             InputStream xmlFile = getServletContext().getResourceAsStream("/WEB-INF/app.xml");
@@ -44,6 +46,11 @@ public class FrontServlet extends HttpServlet {
                         .item(0).getTextContent().trim();
 
                 mappings.add(new Mapping(url, className));
+            }
+
+            controllers = (List<Class<?>>) getServletContext().getAttribute("controllers");
+            if (controllers == null) {
+                controllers = new ArrayList<>();
             }
 
         } catch (Exception e) {
@@ -70,6 +77,16 @@ public class FrontServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         String url = request.getRequestURI().substring(request.getContextPath().length());
+
+        if (url.equals("/controllers")) {
+            out.println("<h3>Classes annotées @Controller trouvées :</h3>");
+            out.println("<ul>");
+            for (Class<?> controller : controllers) {
+                out.println("<li>" + controller.getName() + "</li>");
+            }
+            out.println("</ul>");
+            return;
+        }
 
         Mapping mappingTrouve = null;
         for (Mapping mapping : mappings) {

@@ -6,6 +6,10 @@
 
     <display-name>Projet framework</display-name>
 
+    <listener>
+        <listener-class>mg.itu.framework.AppContextListener</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>FrontServlet</servlet-name>
         <servlet-class>mg.itu.framework.FrontServlet</servlet-class>
