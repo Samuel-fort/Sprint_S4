@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+    <controller-url>
+        <url>/hello</url>
+        <className>mg.itu.controllers.HelloController</className>
+    </controller-url>
+
+</config>
