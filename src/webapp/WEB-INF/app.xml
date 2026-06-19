@@ -6,10 +6,4 @@
         <className>mg.itu.controllers.HelloController</className>
     </controller-url>
 
-    <!--
-        Pour ajouter un nouveau controller, il suffit de dupliquer
-        le bloc <controller-url> ci-dessus avec une nouvelle url
-        et le className correspondant.
-    -->
-
 </config>
