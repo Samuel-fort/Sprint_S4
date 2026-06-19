@@ -4,6 +4,7 @@ public class Mapping {
 
     private String url;
     private String className;
+    private String methodName;
 
     public Mapping() {
     }
@@ -11,6 +12,12 @@ public class Mapping {
     public Mapping(String url, String className) {
         this.url = url;
         this.className = className;
+    }
+
+    public Mapping(String url, String className, String methodName) {
+        this.url = url;
+        this.className = className;
+        this.methodName = methodName;
     }
 
     public String getUrl() {
@@ -29,8 +36,17 @@ public class Mapping {
         this.className = className;
     }
 
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
     @Override
     public String toString() {
-        return "Mapping{url='" + url + "', className='" + className + "'}";
+        return "Mapping{url='" + url + "', className='" + className
+                + "', methodName='" + methodName + "'}";
     }
 }
