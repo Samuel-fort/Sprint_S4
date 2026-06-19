@@ -23,6 +23,7 @@ public class FrontServlet extends HttpServlet {
 
     private List<Mapping> mappings = new ArrayList<>();
     private List<Class<?>> controllers = new ArrayList<>();
+    private List<Mapping> urlMappings = new ArrayList<>();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -53,6 +54,11 @@ public class FrontServlet extends HttpServlet {
                 controllers = new ArrayList<>();
             }
 
+            urlMappings = (List<Mapping>) getServletContext().getAttribute("urlMappings");
+            if (urlMappings == null) {
+                urlMappings = new ArrayList<>();
+            }
+
         } catch (Exception e) {
             throw new ServletException("Erreur lors du chargement de app.xml", e);
         }
@@ -70,6 +76,15 @@ public class FrontServlet extends HttpServlet {
         processRequest(request, response);
     }
 
+    private Mapping trouverMapping(String url) throws UrlNotSupportedException {
+        for (Mapping mapping : urlMappings) {
+            if (mapping.getUrl().equals(url)) {
+                return mapping;
+            }
+        }
+        throw new UrlNotSupportedException("URL not supported : " + url);
+    }
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
@@ -85,6 +100,28 @@ public class FrontServlet extends HttpServlet {
                 out.println("<li>" + controller.getName() + "</li>");
             }
             out.println("</ul>");
+            return;
+        }
+
+        if (url.startsWith("/mvc")) {
+            String realUrl = url.substring("/mvc".length());
+
+            try {
+                Mapping mapping = trouverMapping(realUrl);
+
+                out.println("<h3>URL supportée : " + realUrl + "</h3>");
+                out.println("<p>Classe : " + mapping.getClassName() + "</p>");
+                out.println("<p>Méthode : " + mapping.getMethodName() + "</p>");
+
+            } catch (UrlNotSupportedException e) {
+                out.println("<h3>" + e.getMessage() + "</h3>");
+                out.println("<p>Voici les URL que je connais :</p>");
+                out.println("<ul>");
+                for (Mapping mapping : urlMappings) {
+                    out.println("<li>" + mapping.getUrl() + "</li>");
+                }
+                out.println("</ul>");
+            }
             return;
         }
 

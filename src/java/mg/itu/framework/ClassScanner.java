@@ -7,10 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utilitaire chargé de scanner un package donné afin de retrouver
- * toutes les classes annotées avec @Controller.
- */
+
 public class ClassScanner {
 
     public static List<Class<?>> getControllerClasses(String packageName) throws Exception {
