@@ -24,8 +24,10 @@ public class ClassScanner {
         File directory = new File(resource.toURI());
 
         if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles();
 
+            /* ------------*/
+             
+            File[] files = directory.listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.getName().endsWith(".class")) {
@@ -40,8 +42,37 @@ public class ClassScanner {
                     }
                 }
             }
+            /* --- */
+
+            // scanDirectory(directory, packageName, controllers);
         }
 
         return controllers;
+    }
+
+
+    private static void scanDirectory(File directory, String packageName, List<Class<?>> controllers) throws Exception {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
+
+            if (file.isDirectory()) {
+                String subPackage = packageName + "." + file.getName();
+                scanDirectory(file, subPackage, controllers);
+
+            } else if (file.getName().endsWith(".class")) {
+                String simpleName = file.getName().replace(".class", "");
+                String className = packageName + "." + simpleName;
+
+                Class<?> clazz = Class.forName(className);
+
+                if (clazz.isAnnotationPresent(Controller.class)) {
+                    controllers.add(clazz);
+                }
+            }
+        }
     }
 }

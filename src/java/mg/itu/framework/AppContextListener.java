@@ -3,7 +3,7 @@ package mg.itu.framework;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-
+import mg.itu.annotation.Controller;
 import mg.itu.annotation.URLMapping;
 
 import java.lang.reflect.Method;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Controller
 public class AppContextListener implements ServletContextListener {
 
     @Override
@@ -18,7 +19,7 @@ public class AppContextListener implements ServletContextListener {
         ServletContext context = sce.getServletContext();
 
         try {
-            List<Class<?>> controllers = ClassScanner.getControllerClasses("mg.itu.controllers");
+            List<Class<?>> controllers = ClassScanner.getControllerClasses("mg.itu.framework");
             context.setAttribute("controllers", controllers);
 
             List<Mapping> urlMappings = new ArrayList<>();
