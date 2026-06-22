@@ -6,7 +6,7 @@ SRC_JAVA="src/java"
 SRC_WEBAPP="src/webapp"
 LIB="lib"
 BUILD="build"
-TOMCAT_WEBAPPS="/opt/tomcat/webapps"
+TOMCAT_WEBAPPS="/home/itu/Documents/apps/tomcat/tomcat/webapps"
 
 # Nettoyage de l’ancien build
 rm -rf $BUILD/*
