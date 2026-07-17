@@ -19,7 +19,7 @@ public class AppContextListener implements ServletContextListener {
         ServletContext context = sce.getServletContext();
 
         try {
-            List<Class<?>> controllers = ClassScanner.getControllerClasses("mg.itu.framework");
+            List<Class<?>> controllers = ClassScanner.getControllerClasses("mg.itu.controllers");
             context.setAttribute("controllers", controllers);
 
             List<Mapping> urlMappings = new ArrayList<>();
@@ -31,11 +31,13 @@ public class AppContextListener implements ServletContextListener {
                     if (method.isAnnotationPresent(URLMapping.class)) {
                         URLMapping annotation = method.getAnnotation(URLMapping.class);
                         String url = annotation.value();
+                        String httpMethod = annotation.method();
 
                         Mapping mapping = new Mapping(
                                 url,
                                 controllerClass.getName(),
-                                method.getName()
+                                method.getName(),
+                                httpMethod
                         );
 
                         urlMappings.add(mapping);

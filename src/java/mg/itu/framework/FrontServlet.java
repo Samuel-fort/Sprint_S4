@@ -15,6 +15,7 @@ import org.w3c.dom.NodeList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,13 +77,14 @@ public class FrontServlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    private Mapping trouverMapping(String url) throws UrlNotSupportedException {
+    private Mapping trouverMapping(String url, String httpMethod) throws UrlNotSupportedException {
         for (Mapping mapping : urlMappings) {
-            if (mapping.getUrl().equals(url)) {
+            if (mapping.getUrl().equals(url) && mapping.getHttpMethod().equals(httpMethod)) {
                 return mapping;
             }
         }
-        throw new UrlNotSupportedException("URL not supported : " + url);
+        throw new UrlNotSupportedException("Aucun mapping pour l'URL " + url
+                + " avec la méthode HTTP " + httpMethod);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -105,22 +107,33 @@ public class FrontServlet extends HttpServlet {
 
         if (url.startsWith("/mvc")) {
             String realUrl = url.substring("/mvc".length());
+            String httpMethod = request.getMethod();
 
             try {
-                Mapping mapping = trouverMapping(realUrl);
+                Mapping mapping = trouverMapping(realUrl, httpMethod);
 
                 out.println("<h3>URL supportée : " + realUrl + "</h3>");
+                out.println("<p>Méthode HTTP : " + httpMethod + "</p>");
                 out.println("<p>Classe : " + mapping.getClassName() + "</p>");
                 out.println("<p>Méthode : " + mapping.getMethodName() + "</p>");
+                Class<?> controllerClass = Class.forName(mapping.getClassName());
+                Object controller = controllerClass.getDeclaredConstructor().newInstance();
+                Method controllerMethod = controllerClass.getDeclaredMethod(mapping.getMethodName());
+                Object result = controllerMethod.invoke(controller);
+
+                out.println("<p>Résultat : " + result + "</p>");
 
             } catch (UrlNotSupportedException e) {
                 out.println("<h3>" + e.getMessage() + "</h3>");
-                out.println("<p>Voici les URL que je connais :</p>");
+                out.println("<p>Voici les mappings que je connais :</p>");
                 out.println("<ul>");
                 for (Mapping mapping : urlMappings) {
-                    out.println("<li>" + mapping.getUrl() + "</li>");
+                    out.println("<li>" + mapping.getHttpMethod() + " " + mapping.getUrl() + "</li>");
                 }
                 out.println("</ul>");
+            } catch (ReflectiveOperationException e) {
+                out.println("<h3>Erreur lors de l'exécution du contrôleur</h3>");
+                out.println("<p>" + e.getMessage() + "</p>");
             }
             return;
         }
