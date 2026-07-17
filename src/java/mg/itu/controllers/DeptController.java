@@ -6,6 +6,10 @@ import mg.itu.annotation.URLMapping;
 @Controller
 public class DeptController {
 
+    public DeptController() {
+        System.out.println(">>> DeptController instancié !");
+    }
+
     @URLMapping(value = "/deptnew", method = "GET")
     public String createGet() {
         System.out.println("DeptController.createGet() appelée");

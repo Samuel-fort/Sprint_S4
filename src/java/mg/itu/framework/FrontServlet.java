@@ -116,8 +116,8 @@ public class FrontServlet extends HttpServlet {
                 out.println("<p>Méthode HTTP : " + httpMethod + "</p>");
                 out.println("<p>Classe : " + mapping.getClassName() + "</p>");
                 out.println("<p>Méthode : " + mapping.getMethodName() + "</p>");
-                Class<?> controllerClass = Class.forName(mapping.getClassName());
-                Object controller = controllerClass.getDeclaredConstructor().newInstance();
+                Class<?> controllerClass = mapping.getInstance().getClass();
+                Object controller = mapping.getInstance(); // on réutilise l'instance déjà créée au démarrage
                 Method controllerMethod = controllerClass.getDeclaredMethod(mapping.getMethodName());
                 Object result = controllerMethod.invoke(controller);
 

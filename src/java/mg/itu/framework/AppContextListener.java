@@ -39,6 +39,8 @@ public class AppContextListener implements ServletContextListener {
                                 method.getName(),
                                 httpMethod
                         );
+                        Object instance = controllerClass.getDeclaredConstructor().newInstance(); // instanciation unique au démarrage
+                        mapping.setInstance(instance);
 
                         urlMappings.add(mapping);
                     }

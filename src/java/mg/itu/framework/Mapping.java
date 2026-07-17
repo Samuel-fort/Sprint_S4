@@ -8,6 +8,7 @@ public class Mapping {
     private String httpMethod;
     private String className;
     private String methodName;
+    private Object instance;
 
     public Mapping(String url, String className) {
         this.url = url;
@@ -25,6 +26,9 @@ public class Mapping {
     public String getHttpMethod() { return httpMethod; }
     public String getClassName() { return className; }
     public String getMethodName() { return methodName; }
+    public Object getInstance() { return instance; }
+
+    public void setInstance(Object instance) { this.instance = instance; }
 
     @Override
     public boolean equals(Object object) {
