@@ -1,24 +1,26 @@
 package mg.itu.controllers;
 
 import mg.itu.annotation.Controller;
+import mg.itu.annotation.RestAPI;
 import mg.itu.annotation.URLMapping;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Controller
 public class DeptController {
 
-    public DeptController() {
-        System.out.println(">>> DeptController instancié !");
+    @URLMapping("/deptnew")
+    public String create() {
+        return "dept created";
     }
 
-    @URLMapping(value = "/deptnew", method = "GET")
-    public String createGet() {
-        System.out.println("DeptController.createGet() appelée");
-        return "dept created with GET";
-    }
-
-    @URLMapping(value = "/deptnew", method = "POST")
-    public String createPost() {
-        System.out.println("DeptController.createPost() appelée");
-        return "dept created with POST";
+    @RestAPI
+    @URLMapping("/api/dept")
+    public Map<String, Object> apiDept() {
+        Map<String, Object> dept = new LinkedHashMap<>();
+        dept.put("id", 1);
+        dept.put("nom", "Informatique");
+        return dept;
     }
 }

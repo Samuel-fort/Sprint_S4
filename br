@@ -7,3 +7,5 @@ http://localhost:8080/framework/mvc/urlbidon
 
 test sprint 4 
 tail -f /opt/tomcat/logs/catalina.out
+
+fetch('/framework/mvc/api/dept').then(r => r.json()).then(console.log)

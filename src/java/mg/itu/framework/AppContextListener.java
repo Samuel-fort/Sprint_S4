@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Controller
 public class AppContextListener implements ServletContextListener {
 
@@ -37,9 +36,9 @@ public class AppContextListener implements ServletContextListener {
                                 url,
                                 controllerClass.getName(),
                                 method.getName(),
-                                httpMethod
-                        );
-                        Object instance = controllerClass.getDeclaredConstructor().newInstance(); // instanciation unique au démarrage
+                                annotation.method());
+                        Object instance = controllerClass.getDeclaredConstructor().newInstance(); // instanciation
+                                                                                                  // unique au démarrage
                         mapping.setInstance(instance);
 
                         urlMappings.add(mapping);
@@ -56,6 +55,6 @@ public class AppContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        
+
     }
 }
