@@ -8,3 +8,38 @@ sources.txt
 .idea/
 *.iml
 .vscode/
+
+# Build outputs
+build/
+*.class
+*.war
+*.ear
+*.jar
+!lib/*.jar
+
+# Temporary build files
+sources.txt
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment and local config
+.env
+.env.*
+*.local
+origin/main

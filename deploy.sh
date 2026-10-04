@@ -10,6 +10,7 @@ SRC_WEBAPP="src/webapp"
 LIB="lib"
 BUILD="build"
 
+
 # Dossier webapps de Tomcat :
 #   1) variable TOMCAT_WEBAPPS si fournie, 2) sinon $CATALINA_HOME/webapps, 3) sinon /opt/tomcat/webapps
 TOMCAT_WEBAPPS="${TOMCAT_WEBAPPS:-${CATALINA_HOME:-/opt/tomcat}/webapps}"
@@ -18,6 +19,9 @@ if [ ! -d "$TOMCAT_WEBAPPS" ]; then
   echo "Utilise : TOMCAT_WEBAPPS=/ton/chemin/webapps ./deploy.sh" >&2
   exit 1
 fi
+
+TOMCAT_WEBAPPS="/home/itu/Documents/apps/tomcat/tomcat/webapps"
+ 
 
 # Nettoyage de l’ancien build
 rm -rf $BUILD/*
