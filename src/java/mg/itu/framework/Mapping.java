@@ -5,6 +5,7 @@ public class Mapping {
     private String url;
     private String className;
     private String methodName;
+    private HttpMethod httpMethod = HttpMethod.GET;
 
     public Mapping() {
     }
@@ -18,6 +19,13 @@ public class Mapping {
         this.url = url;
         this.className = className;
         this.methodName = methodName;
+    }
+
+    public Mapping(String url, String className, String methodName, HttpMethod httpMethod) {
+        this.url = url;
+        this.className = className;
+        this.methodName = methodName;
+        this.httpMethod = httpMethod;
     }
 
     public String getUrl() {
@@ -44,9 +52,17 @@ public class Mapping {
         this.methodName = methodName;
     }
 
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
     @Override
     public String toString() {
-        return "Mapping{url='" + url + "', className='" + className
+        return "Mapping{url='" + url + "', httpMethod=" + httpMethod + ", className='" + className
                 + "', methodName='" + methodName + "'}";
     }
 }

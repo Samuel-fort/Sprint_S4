@@ -2,5 +2,10 @@ javac -cp "lib/servlet-api.jar:." -d /tmp/test_classes $(find src/java -name "*.
 
 http://localhost:8080/framework/controllers
 http://localhost:8080/framework/hello
-http://localhost:8080/framework/mvc/inconnu
+http://localhost:8080/framework/mvc/urlbidon
                                     deptnew
+
+test sprint 4 
+tail -f /opt/tomcat/logs/catalina.out
+
+fetch('/framework/mvc/api/dept').then(r => r.json()).then(console.log)

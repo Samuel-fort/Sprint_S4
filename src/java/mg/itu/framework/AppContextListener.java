@@ -3,14 +3,14 @@ package mg.itu.framework;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-
+import mg.itu.annotation.Controller;
 import mg.itu.annotation.URLMapping;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Controller
 public class AppContextListener implements ServletContextListener {
 
     @Override
@@ -30,12 +30,16 @@ public class AppContextListener implements ServletContextListener {
                     if (method.isAnnotationPresent(URLMapping.class)) {
                         URLMapping annotation = method.getAnnotation(URLMapping.class);
                         String url = annotation.value();
+                        String httpMethod = annotation.method();
 
                         Mapping mapping = new Mapping(
                                 url,
                                 controllerClass.getName(),
-                                method.getName()
-                        );
+                                method.getName(),
+                                annotation.method());
+                        Object instance = controllerClass.getDeclaredConstructor().newInstance(); // instanciation
+                                                                                                  // unique au démarrage
+                        mapping.setInstance(instance);
 
                         urlMappings.add(mapping);
                     }
@@ -51,6 +55,6 @@ public class AppContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        
+
     }
 }
