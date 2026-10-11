@@ -1,3 +1,14 @@
+# Fichiers générés par la compilation et le déploiement
+build/
+*.class
+*.war
+sources.txt
+
+# Fichiers de l'IDE
+.idea/
+*.iml
+.vscode/
+
 # Build outputs
 build/
 *.class
@@ -31,3 +42,4 @@ Thumbs.db
 .env
 .env.*
 *.local
+origin/main

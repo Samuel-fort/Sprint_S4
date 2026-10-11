@@ -11,5 +11,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface URLMapping {
     String value();
+
     HttpMethod method() default HttpMethod.GET;
 }

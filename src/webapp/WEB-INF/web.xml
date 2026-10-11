@@ -6,6 +6,12 @@
 
     <display-name>Projet framework</display-name>
 
+    <!-- Package(s) des contrôleurs, séparés par des virgules -->
+    <context-param>
+        <param-name>controller-package</param-name>
+        <param-value>mg.itu.controllers</param-value>
+    </context-param>
+
     <listener>
         <listener-class>mg.itu.framework.AppContextListener</listener-class>
     </listener>
@@ -16,9 +22,10 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <!-- "/" et non "/*" : les forward vers les .jsp restent gérés par Tomcat -->
     <servlet-mapping>
         <servlet-name>FrontServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
 </web-app>
