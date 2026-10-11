@@ -11,7 +11,8 @@ import java.lang.reflect.Parameter;
 /**
  * Construit le tableau d'arguments de la méthode du contrôleur à partir de la requête.
  *  - HttpServletRequest / HttpServletResponse / HttpSession : injectés
- *  - types simples et tableaux de types simples : lus depuis les paramètres de formulaire
+ *  - types simples et tableaux de types simples : paramètre de formulaire "nom"
+ *  - objets (ex. Etudiant) : paramètres "nom.champ" (voir BeanBinder)
  */
 public final class ArgumentResolver {
 
@@ -37,6 +38,8 @@ public final class ArgumentResolver {
                     args[i] = TypeConverter.convert(request.getParameter(name), type, name);
                 } else if (TypeConverter.isSimpleArray(type)) {
                     args[i] = TypeConverter.convertArray(request.getParameterValues(name), type, name);
+                } else if (BeanBinder.isBean(type)) {
+                    args[i] = BeanBinder.bind(type, name, request, true);
                 } else {
                     throw new IllegalStateException("Type d'argument non supporté pour '" + name + "' : "
                             + type.getName() + " (" + action.getDeclaringClass().getSimpleName()
