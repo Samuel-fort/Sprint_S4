@@ -14,6 +14,7 @@ import java.util.Enumeration;
  * Exemple : etudiant.nom=Rakoto, etudiant.age=20  ->  Etudiant(nom, age).
  * Objets imbriqués supportés : etudiant.adresse.ville=Tana.
  * Un setter public est utilisé s'il existe, sinon le champ est écrit directement.
+ * Un champ de type Mapfile reçoit le fichier envoyé dans "prefixe.champ" (formulaire multipart).
  */
 public final class BeanBinder {
 
@@ -28,7 +29,8 @@ public final class BeanBinder {
 
     /** @param top true pour l'argument de la méthode (toujours instancié), false pour un objet imbriqué. */
     public static Object bind(Class<?> type, String prefix, HttpServletRequest request, boolean top) {
-        if (!top && !hasParameterWithPrefix(request, prefix + ".")) {
+        if (!top && !hasParameterWithPrefix(request, prefix + ".")
+                && !FileUpload.hasFileWithPrefix(request, prefix + ".")) {
             return null;
         }
 
@@ -45,7 +47,12 @@ public final class BeanBinder {
                 Class<?> fieldType = field.getType();
                 Object value;
 
-                if (TypeConverter.isSimple(fieldType)) {
+                if (fieldType == Mapfile.class) {
+                    value = FileUpload.read(request, key);
+                    if (value == null) {
+                        continue;
+                    }
+                } else if (TypeConverter.isSimple(fieldType)) {
                     String raw = request.getParameter(key);
                     if (raw == null) {
                         continue;
