@@ -17,6 +17,11 @@
         <param-name>auth-user-key</param-name>
         <param-value>user</param-value>
     </context-param>
+    <!-- sprint 10 bis : attribut de session qui contient le rôle -->
+    <context-param>
+        <param-name>auth-role-key</param-name>
+        <param-value>role</param-value>
+    </context-param>
     <context-param>
         <param-name>login-url</param-name>
         <param-value>/login</param-value>
