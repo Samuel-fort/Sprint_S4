@@ -7,12 +7,16 @@ import mg.itu.annotation.Param;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Construit le tableau d'arguments de la méthode du contrôleur à partir de la requête.
  *  - HttpServletRequest / HttpServletResponse / HttpSession : injectés
  *  - types simples et tableaux de types simples : paramètre de formulaire "nom"
  *  - objets (ex. Etudiant) : paramètres "nom.champ" (voir BeanBinder)
+ *  - Mapfile : fichier envoyé dans le champ "nom" (formulaire multipart)
+ *  - Map<String, Object> : tous les champs du formulaire + les fichiers (Mapfile)
  */
 public final class ArgumentResolver {
 
@@ -32,9 +36,13 @@ public final class ArgumentResolver {
                 args[i] = response;
             } else if (type == HttpSession.class) {
                 args[i] = request.getSession();
+            } else if (type == Map.class) {
+                args[i] = formData(request);
             } else {
                 String name = nameOf(parameters[i], action);
-                if (TypeConverter.isSimple(type)) {
+                if (type == Mapfile.class) {
+                    args[i] = FileUpload.read(request, name);
+                } else if (TypeConverter.isSimple(type)) {
                     args[i] = TypeConverter.convert(request.getParameter(name), type, name);
                 } else if (TypeConverter.isSimpleArray(type)) {
                     args[i] = TypeConverter.convertArray(request.getParameterValues(name), type, name);
@@ -48,6 +56,17 @@ public final class ArgumentResolver {
             }
         }
         return args;
+    }
+
+    /** Option 1 : champs texte (String, ou String[] si plusieurs valeurs) + fichiers (Mapfile). */
+    private static Map<String, Object> formData(HttpServletRequest request) {
+        Map<String, Object> data = new LinkedHashMap<>();
+        for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+            String[] values = entry.getValue();
+            data.put(entry.getKey(), values.length == 1 ? values[0] : values);
+        }
+        data.putAll(FileUpload.readAll(request));
+        return data;
     }
 
     static String nameOf(Parameter parameter, Method action) {
