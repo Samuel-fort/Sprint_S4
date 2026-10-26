@@ -129,6 +129,7 @@ public class FrontServlet extends HttpServlet {
         try {
             Object[] args = ArgumentResolver.resolve(mapping.getMethod(), request, response);
             Object result = mapping.getMethod().invoke(mapping.getInstance(), args);
+            saveSessions(args, request);
             ResponseWriter.write(mapping.getMethod(), result, request, response);
 
         } catch (InvocationTargetException e) {
@@ -142,6 +143,15 @@ public class FrontServlet extends HttpServlet {
 
         } catch (IllegalAccessException e) {
             sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur", e.getMessage());
+        }
+    }
+
+    // sprint 9 : recopie les changements faits dans un argument Session vers la session HTTP
+    private static void saveSessions(Object[] args, HttpServletRequest request) {
+        for (Object arg : args) {
+            if (arg instanceof Session) {
+                SessionManager.save((Session) arg, request);
+            }
         }
     }
 
