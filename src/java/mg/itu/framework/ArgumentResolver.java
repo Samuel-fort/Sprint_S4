@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  * Construit le tableau d'arguments de la méthode du contrôleur à partir de la requête.
  *  - HttpServletRequest / HttpServletResponse / HttpSession : injectés
+ *  - Session (framework) : la session sous forme de Map, voir SessionManager
  *  - types simples et tableaux de types simples : paramètre de formulaire "nom"
  *  - objets (ex. Etudiant) : paramètres "nom.champ" (voir BeanBinder)
  *  - Mapfile : fichier envoyé dans le champ "nom" (formulaire multipart)
@@ -36,6 +37,8 @@ public final class ArgumentResolver {
                 args[i] = response;
             } else if (type == HttpSession.class) {
                 args[i] = request.getSession();
+            } else if (type == Session.class) {
+                args[i] = SessionManager.obtain(request);
             } else if (type == Map.class) {
                 args[i] = formData(request);
             } else {

@@ -16,6 +16,11 @@
         <listener-class>mg.itu.framework.AppContextListener</listener-class>
     </listener>
 
+    <!-- sprint 9 : oublie la Session quand la session HTTP expire -->
+    <listener>
+        <listener-class>mg.itu.framework.SessionCleanupListener</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>FrontServlet</servlet-name>
         <servlet-class>mg.itu.framework.FrontServlet</servlet-class>
