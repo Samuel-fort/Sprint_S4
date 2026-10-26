@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mg.itu.annotation.RestAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -127,10 +128,14 @@ public class FrontServlet extends HttpServlet {
     private void execute(Mapping mapping, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            AccessControl.check(mapping.getMethod(), request);
             Object[] args = ArgumentResolver.resolve(mapping.getMethod(), request, response);
             Object result = mapping.getMethod().invoke(mapping.getInstance(), args);
             saveSessions(args, request);
             ResponseWriter.write(mapping.getMethod(), result, request, response);
+
+        } catch (AccessDeniedException e) {
+            handleDenied(e, mapping, request, response);
 
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause() != null ? e.getCause() : e;
@@ -144,6 +149,21 @@ public class FrontServlet extends HttpServlet {
         } catch (IllegalAccessException e) {
             sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur", e.getMessage());
         }
+    }
+
+    // sprint 10 : 401 -> redirection vers login-url (sauf @RestAPI), 403 -> page d'erreur
+    private void handleDenied(AccessDeniedException e, Mapping mapping,
+                              HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String loginUrl = getServletContext().getInitParameter(AccessControl.PARAM_LOGIN_URL);
+        boolean api = mapping.getMethod().isAnnotationPresent(RestAPI.class);
+        if (e.getStatus() == HttpServletResponse.SC_UNAUTHORIZED && !api
+                && loginUrl != null && !loginUrl.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + loginUrl.trim());
+            return;
+        }
+        String title = e.getStatus() == HttpServletResponse.SC_UNAUTHORIZED
+                ? "Authentification requise" : "Accès refusé";
+        sendError(response, e.getStatus(), title, e.getMessage());
     }
 
     // sprint 9 : recopie les changements faits dans un argument Session vers la session HTTP
