@@ -12,6 +12,16 @@
         <param-value>mg.itu.controllers</param-value>
     </context-param>
 
+    <!-- sprint 10 : authentification (voir @Authenticated) -->
+    <context-param>
+        <param-name>auth-user-key</param-name>
+        <param-value>user</param-value>
+    </context-param>
+    <context-param>
+        <param-name>login-url</param-name>
+        <param-value>/login</param-value>
+    </context-param>
+
     <listener>
         <listener-class>mg.itu.framework.AppContextListener</listener-class>
     </listener>
