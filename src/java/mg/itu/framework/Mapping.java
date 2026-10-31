@@ -15,6 +15,7 @@ public class Mapping {
     private String methodName;
     private HttpMethod httpMethod = HttpMethod.GET;
     private Object instance;
+    private Class<?> controllerClass;
     private Method method;
 
     public Mapping() {
@@ -52,6 +53,22 @@ public class Mapping {
 
     public HttpMethod getHttpMethod() { return httpMethod; }
     public void setHttpMethod(HttpMethod httpMethod) { this.httpMethod = httpMethod; }
+
+    public Class<?> getControllerClass() { return controllerClass; }
+    public void setControllerClass(Class<?> controllerClass) { this.controllerClass = controllerClass; }
+
+    /**
+     * Sprint 11 : l'objet sur lequel appeler la méthode.
+     * Singleton -> l'instance créée au démarrage ; @NotSingleton -> une nouvelle instance à chaque appel.
+     */
+    public Object instanceForRequest() throws ReflectiveOperationException {
+        if (instance != null) {
+            return instance;
+        }
+        java.lang.reflect.Constructor<?> constructor = controllerClass.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        return constructor.newInstance();
+    }
 
     public Object getInstance() { return instance; }
     public void setInstance(Object instance) { this.instance = instance; }

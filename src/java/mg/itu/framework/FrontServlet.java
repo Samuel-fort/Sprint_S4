@@ -130,7 +130,7 @@ public class FrontServlet extends HttpServlet {
         try {
             AccessControl.check(mapping.getMethod(), request);
             Object[] args = ArgumentResolver.resolve(mapping.getMethod(), request, response);
-            Object result = mapping.getMethod().invoke(mapping.getInstance(), args);
+            Object result = mapping.getMethod().invoke(mapping.instanceForRequest(), args);
             saveSessions(args, request);
             ResponseWriter.write(mapping.getMethod(), result, request, response);
 
@@ -146,7 +146,7 @@ public class FrontServlet extends HttpServlet {
         } catch (IllegalArgumentException e) {
             sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Requête invalide", e.getMessage());
 
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur serveur", e.getMessage());
         }
     }

@@ -138,3 +138,10 @@ git push -u origin sprintX
 ```
 Puis ouverture de la Pull Request sur GitHub (`sprintX` → `main`).
 
+
+## Sprint 11 — contrôleurs singleton / non singleton
+
+- Par défaut, un contrôleur est un **singleton** : une seule instance, créée au démarrage (`AppContextListener`) et partagée par toutes les requêtes. Ses attributs sont conservés d'une requête à l'autre.
+- `@NotSingleton` sur la classe : une **nouvelle instance est créée à chaque requête** (`Mapping.instanceForRequest()`). Ses attributs repartent à zéro.
+- Ne jamais stocker de données propres à un utilisateur dans un singleton : utiliser la `Session`.
+- Test : `/singleton/compteur` (le compteur monte à chaque rechargement) et `/notsingleton/compteur` (toujours 1).

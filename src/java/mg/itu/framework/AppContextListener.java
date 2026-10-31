@@ -3,6 +3,7 @@ package mg.itu.framework;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
+import mg.itu.annotation.NotSingleton;
 import mg.itu.annotation.URLMapping;
 
 import java.lang.reflect.Constructor;
@@ -74,16 +75,21 @@ public class AppContextListener implements ServletContextListener {
                                 + " et " + controllerClass.getName() + "." + method.getName());
                     }
 
-                    Object instance = instances.get(controllerClass);
-                    if (instance == null) {
-                        Constructor<?> constructor = controllerClass.getDeclaredConstructor();
-                        constructor.setAccessible(true);
-                        instance = constructor.newInstance();
-                        instances.put(controllerClass, instance);
+                    Constructor<?> constructor = controllerClass.getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    mapping.setControllerClass(controllerClass);
+
+                    // sprint 11 : singleton par défaut ; @NotSingleton -> instance créée à chaque requête
+                    if (!controllerClass.isAnnotationPresent(NotSingleton.class)) {
+                        Object instance = instances.get(controllerClass);
+                        if (instance == null) {
+                            instance = constructor.newInstance();
+                            instances.put(controllerClass, instance);
+                        }
+                        mapping.setInstance(instance);
                     }
 
                     method.setAccessible(true);
-                    mapping.setInstance(instance);
                     mapping.setMethod(method);
                     urlMappings.put(mapping, mapping);
                 }
